@@ -5,7 +5,7 @@ class Dockercolorize < Formula
   
     if OS.mac?
         url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-darwin-amd64"
-        sha256 "548dc26e485a53deeaa27fe8780620f64bc6ef022eaea7525f55c32b943d7127"
+        sha256 "2df82524b7d7e90b1c2df7656537c7fe61f4746f4d4c2620d92d897421da9c80"
     else
         url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-linux-amd64"
         sha256 "3367974eb0b587b7b4a7fe364c2aebcabc7976f70d7ae89286dc3131c17b8ac2"
