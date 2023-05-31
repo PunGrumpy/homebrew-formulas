@@ -1,32 +1,26 @@
 class Dockercolorize < Formula
-    include Language::Go::GOPATH_OPTIONAL
-
     desc "Enhancing Docker output with vibrant colors"
     homepage "https://github.com/PunGrumpy/dockercolorize"
-    url "https://github.com/PunGrumpy/dockercolorize/archive/refs/tags/2.4.7.tar.gz"
-    sha256 "1d7538e7b801a537cba28babe5c67f07d7515bcd"
-
-    depends_on "go" => :build
+    version "2.4.7"
+  
+    if OS.mac?
+        url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-darwin-amd64"
+        sha256 "548dc26e485a53deeaa27fe8780620f64bc6ef022eaea7525f55c32b943d7127"
+    else
+        url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-linux-amd64"
+        sha256 "3367974eb0b587b7b4a7fe364c2aebcabc7976f70d7ae89286dc3131c17b8ac2"
+    end
 
     def install
         if OS.mac?
-            ENV["CGO_ENABLED"] = "1"
-            ENV["GOOS"] = "darwin"
-            ENV["GOARCH"] = "amd64"
+            bin.install "dockercolorize-darwin-amd64" => "dockercolorize"
         else
-            ENV["CGO_ENABLED"] = "0"
-            ENV["GOOS"] = "linux"
-            ENV["GOARCH"] = "amd64"
+            bin.install "dockercolorize-linux-amd64" => "dockercolorize"
         end
-
-        ENV["GOPATH"] = buildpath
-        ENV["GO111MODULE"] = "auto"
-        ENV["GOFLAGS"] = "-mod=vendor"
-        system "go", "build", "-o", bin/"dockercolorize", "cmd/cli/main.go"
-        prefix.install_metafiles
     end
-
+  
     test do
-        assert_match "dockercolorize version", shell_output("#{bin}/dockercolorize --version")
+        assert_match "Usage:", shell_output("#{bin}/dockercolorize --help")
     end
-end
+  end
+  
