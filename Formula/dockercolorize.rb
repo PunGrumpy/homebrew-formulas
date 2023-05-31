@@ -1,4 +1,4 @@
-class dockercolorize < Formula
+class Dockercolorize < Formula
     include Language::Go::GOPATH_OPTIONAL
 
     desc "Enhancing Docker output with vibrant colors"
