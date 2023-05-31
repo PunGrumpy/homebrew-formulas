@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🍺 MephistoGrumpy's Homebrew Tap
+# 🍺 PunGrumpy's Homebrew Tap
 
 My personal Homebrew tap housing formulas for all my Homebrew projects.
 
