@@ -33,7 +33,7 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
       - name: List files
         run: |
-          echo ls Formula | sed 's/\.rb//g' > files.txt
+          ls Formula | sed 's/\.rb//g' > files.txt
       - name: brew install
         run: |
           while read tap_file; do
