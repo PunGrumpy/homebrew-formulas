@@ -1,5 +1,5 @@
 class Goblin < Formula
-  desc "A command-line tool for hashing and reversing hashes using Jenkins"
+  desc "Command-line tool for hashing and reversing hashes using Jenkins"
   homepage "https://github.com/PunGrumpy/goblin"
   version "0.1.4"
 
