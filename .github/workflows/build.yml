@@ -14,15 +14,25 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
       - name: Brew tap
         run: brew tap PunGrumpy/formulas
-  install:
+  install_folder:
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
-      - name: brew install formula
+      - name: brew install
         run: brew install --formula $(pwd)/Formula/*.rb
+  install_tap:
+    needs: tap
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+      - name: brew install from tap
+        run: brew install PunGrumpy/formulas/$(basename $(pwd))
   audit:
     runs-on: macos-latest
     steps:
