@@ -2,7 +2,7 @@ class Dockercolorize < Formula
   desc "Enhancing Docker output with vibrant colors"
   homepage "https://github.com/PunGrumpy/dockercolorize"
   version "2.5.2"
-  
+
   depends_on "docker"
 
   if OS.mac?
@@ -21,10 +21,6 @@ class Dockercolorize < Formula
     end
   end
 
-  test do
-    assert_match "Usage:", shell_output("#{bin}/dockercolorize --help")
-  end
-
   def caveats
     <<~EOS
       🐳🌈 To use dockercolorize, please add the following line to your bash, zsh or fish config:
@@ -39,6 +35,10 @@ class Dockercolorize < Formula
                 #{shell_format("alias di \"docker images | dockercolorize\"", :green)}
                 #{shell_format("alias dstats \"docker stats --no-stream | dockercolorize\"", :green)}
     EOS
+  end
+
+  test do
+    assert_match "Usage:", shell_output("#{bin}/dockercolorize --help")
   end
 
   private
