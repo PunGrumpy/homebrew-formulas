@@ -22,4 +22,22 @@ class Dockercolorize < Formula
   test do
     assert_match "Usage:", shell_output("#{bin}/dockercolorize --help")
   end
+
+  depends_on "docker"
+
+  def caveats
+    <<~EOS
+      🐳🌈 To use dockercolorize, please add the following line to your bash, zsh or fish config:
+        bash/zsh:
+          alias dps="docker ps | dockercolorize"
+          alias dcps="docker compose ps | dockercolorize"
+          alias di="docker images | dockercolorize"
+          alias dstats="docker stats --no-stream | dockercolorize"
+        fish:
+          alias dps "docker ps | dockercolorize"
+          alias dcps "docker compose ps | dockercolorize"
+          alias di "docker images | dockercolorize"
+          alias dstats "docker stats --no-stream | dockercolorize"
+    EOS
+  end
 end
