@@ -2,6 +2,8 @@ class Dockercolorize < Formula
   desc "Enhancing Docker output with vibrant colors"
   homepage "https://github.com/PunGrumpy/dockercolorize"
   version "2.5.2"
+  
+  depends_on "docker"
 
   if OS.mac?
     url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-darwin-amd64"
@@ -22,8 +24,6 @@ class Dockercolorize < Formula
   test do
     assert_match "Usage:", shell_output("#{bin}/dockercolorize --help")
   end
-
-  depends_on "docker"
 
   def caveats
     <<~EOS
