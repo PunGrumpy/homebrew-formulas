@@ -28,16 +28,30 @@ class Dockercolorize < Formula
   def caveats
     <<~EOS
       🐳🌈 To use dockercolorize, please add the following line to your bash, zsh or fish config:
-        bash/zsh:
-          alias dps="docker ps | dockercolorize"
-          alias dcps="docker compose ps | dockercolorize"
-          alias di="docker images | dockercolorize"
-          alias dstats="docker stats --no-stream | dockercolorize"
-        fish:
-          alias dps "docker ps | dockercolorize"
-          alias dcps "docker compose ps | dockercolorize"
-          alias di "docker images | dockercolorize"
-          alias dstats "docker stats --no-stream | dockercolorize"
+              #{shell_format("bash/zsh:", :bold)}
+                #{shell_format("alias dps=\"docker ps | dockercolorize\"", :green)}
+                #{shell_format("alias dcps=\"docker compose ps | dockercolorize\"", :green)}
+                #{shell_format("alias di=\"docker images | dockercolorize\"", :green)}
+                #{shell_format("alias dstats=\"docker stats --no-stream | dockercolorize\"", :green)}
+              #{shell_format("fish:", :bold)}
+                #{shell_format("alias dps \"docker ps | dockercolorize\"", :green)}
+                #{shell_format("alias dcps \"docker compose ps | dockercolorize\"", :green)}
+                #{shell_format("alias di \"docker images | dockercolorize\"", :green)}
+                #{shell_format("alias dstats \"docker stats --no-stream | dockercolorize\"", :green)}
     EOS
+  end
+
+  private
+
+  def shell_format(text, *effects)
+    effects.each do |effect|
+      case effect
+      when :bold
+        text = "\e[1m#{text}\e[0m"
+      when :green
+        text = "\e[32m#{text}\e[0m"
+      end
+    end
+    text
   end
 end
