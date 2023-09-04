@@ -1,14 +1,14 @@
 class Goblin < Formula
   desc "Command-line tool for hashing and reversing hashes using Jenkins' one time hash"
   homepage "https://github.com/PunGrumpy/goblin"
-  version "0.1.7"
+  version "0.1.8"
 
   if OS.mac?
     url "https://github.com/PunGrumpy/goblin/releases/download/#{version}/goblin-darwin-amd64"
-    sha256 "8f1474f1b6d785d8dc9c51ba52ca139096dc631febb7677d4b077054376c75b4"
+    sha256 "7633d5830a871a4311455f7ffedf94a3647bc6f7d49ba0bb0ff3f28b243c10d0"
   else
     url "https://github.com/PunGrumpy/goblin/releases/download/#{version}/goblin-linux-amd64"
-    sha256 "e89c12fbcb4dea1d5dfea0667842676eabfe70f92ee73649f7dc06729c144aee"
+    sha256 "6d0c3fea2f531ebfbcc253d829071c1bb74e6ea3a62428d41ca97132114d1efb"
   end
 
   def install
