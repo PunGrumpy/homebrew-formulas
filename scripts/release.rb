@@ -1,76 +1,69 @@
-require "json"
-require "digest"
-require "net/http"
+require 'json'
+require 'digest'
+require 'net/http'
 
-version = ARGV[0]
-name = ARGV[1]
-if version.nil? || name.nil?
-    abort "Usage: ruby scripts/release.rb <version> <name>"
-else
-    version = version.gsub(/[a-z-]*/i, "")
-    name = name.gsub(/[^a-z-]/i, "")
+def prompt_usage
+  puts 'Usage: ruby scripts/release.rb <version> <name>'
+  exit(1)
 end
+
+version, name = ARGV[0], ARGV[1]
+prompt_usage if version.nil? || name.nil?
+
+version = version.gsub(/[^0-9.]/, '')
+name = name.gsub(/[^a-z-]/i, '')
 
 puts "🏷️ Releasing #{name} on Homebrew version #{version}"
 
-url = "https://api.github.com/repos/PunGrumpy/#{name}/releases/#{version}"
+url = "https://api.github.com/repos/PunGrumpy/#{name}/releases/tags/#{version}"
 response = Net::HTTP.get_response(URI(url))
+
 unless response.is_a?(Net::HTTPSuccess)
-    abort "❌ Didn't find release #{version} for #{name} 🌐 status code: #{response.code}"
+  puts "❌ Didn't find release #{version} for #{name} 🌐 status code: #{response.code}"
+  exit(1)
 end
 
 release = JSON.parse(response.body)
-puts "📦 Found release #{release["name"]} for #{name}"
+puts "📦 Found release #{release['name']} for #{name}"
 
 assets = {}
-for asset in release["assets"]
-    filename = asset["name"]
-    if !filename.end_with?(".zip") || filename.include?("-profile")
-        puts "📦 Skipping asset #{filename}"
-        next
-    end
 
-    url = asset["browser_download_url"]
-    begin
-        response = Net::HTTP.get_response(URI(url))
-        url = response["location"]
-    end while response.is_a?(Net::HTTPRedirection)
+for asset in release['assets']
+  filename = asset['name']
 
-    unless response.is_a?(Net::HTTPSuccess)
-        abort "❌ Didn't find asset #{filename} for #{name} 🌐 status code: #{response.code}"
-    end
+  if !filename.end_with?('.zip') || filename.include?('-profile')
+    puts "📦 Skipping asset #{filename}"
+    next
+  end
 
-    sha256 = Digest::SHA256.hexdigest(response.body)
-    puts "📦 Found asset #{filename} with SHA256 #{sha256}"
+  url = asset['browser_download_url']
 
-    assets[filename] = sha256
+  begin
+    response = Net::HTTP.get_response(URI(url))
+    url = response['location']
+  end while response.is_a?(Net::HTTPRedirection)
+
+  unless response.is_a?(Net::HTTPSuccess)
+    puts "❌ Didn't find asset #{filename} for #{name} 🌐 status code: #{response.code}"
+    exit(1)
+  end
+
+  sha256 = Digest::SHA256.hexdigest(response.body)
+  puts "📦 Found asset #{filename} with SHA256 #{sha256}"
+
+  assets[filename] = sha256
 end
 
-formula = ""
-File.open("Formula/#{name}.rb", "r") do |file|
-    file.each_line do |line|
-        query = line.strip
+formula = File.read("Formula/#{name}.rb")
 
-        new_line = if query.start_with?("version")
-            line.gsub(/"[0-9\.]{1,}"/, "\"#{version}\"")
-        elsif query.start_with?("sha256")
-            asset = query[(query.index("#") + 2)..-1].strip
-            sha256 = assets[asset]
-            if sha256.nil?
-                abort "❌ Didn't find asset #{asset} for #{name}"
-            end
-            line.gsub(/"[A-Fa-f0-9]{1,}"/, "\"#{sha256}\"")
-        else
-            line
-        end
+formula = formula.gsub(/version\s+".*"/, "version \"#{version}\"")
 
-        formula += new_line
-    end
+assets.each do |filename, sha256|
+    formula = formula.gsub(/sha256\s+"[A-Fa-f0-9]*"\s+#\s+#{Regexp.quote(filename)}/, "sha256 \"#{sha256}\" # #{filename}")
+    puts "📦 Updated asset #{filename} with SHA256 #{sha256}"
 end
 
-versioned_class = "class #{name.capitalize} < Formula"
-versioned_formula = formula.gsub(/class [A-Za-z]{1,} < Formula/, versioned_class)
-File.write("Formula/#{name}.rb", versioned_formula)
+File.write("Formula/#{name}.rb", formula)
 puts "📦 Updated formula #{name} to version #{version}"
 
-puts "🍭 Done!"
+puts '🍭 Done!'
