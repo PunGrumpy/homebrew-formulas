@@ -18,9 +18,13 @@ class Goblin < Formula
       bin.install "goblin-linux-amd64" => "goblin"
     end
 
-    bash_completion.install "completion/goblin.bash"
-    zsh_completion.install "completion/goblin.zsh" => "_goblin"
-    fish_completion.install "completion/goblin.fish"
+    system "#{bin}/goblin", "completion", "bash"
+    system "#{bin}/goblin", "completion", "zsh"
+    system "#{bin}/goblin", "completion", "fish"
+
+    bash_completion.install "goblin-completion.bash" => "goblin"
+    zsh_completion.install "_goblin"
+    fish_completion.install "goblin.fish"
   end
 
   test do
