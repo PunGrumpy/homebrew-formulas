@@ -1,5 +1,5 @@
 class Goblin < Formula
-  desc "Command-line tool for hashing and reversing hashes using Jenkins' one time hash"
+  desc "Command-line tool for hashing and reversing hashes using Jenkins' one-time hash"
   homepage "https://github.com/PunGrumpy/goblin"
   version "0.2.5"
 
@@ -11,6 +11,8 @@ class Goblin < Formula
     sha256 "64f01e7f7a6c7afbae40d71462cc4ab3eb25bf5ef281230eb988d7d9634e91d9"
   end
 
+  bottle :unneeded
+
   def install
     if OS.mac?
       bin.install "goblin-darwin-amd64" => "goblin"
@@ -18,11 +20,7 @@ class Goblin < Formula
       bin.install "goblin-linux-amd64" => "goblin"
     end
 
-    system "#{bin}/goblin", "completion", "bash"
-    system "#{bin}/goblin", "completion", "zsh"
-    system "#{bin}/goblin", "completion", "fish"
-
-    bash_completion.install "goblin-completion.bash" => "goblin"
+    bash_completion.install "goblin-completion.bash"
     zsh_completion.install "_goblin"
     fish_completion.install "goblin.fish"
   end
