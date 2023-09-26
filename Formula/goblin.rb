@@ -11,8 +11,6 @@ class Goblin < Formula
     sha256 "64f01e7f7a6c7afbae40d71462cc4ab3eb25bf5ef281230eb988d7d9634e91d9"
   end
 
-  bottle :unneeded
-
   def install
     if OS.mac?
       bin.install "goblin-darwin-amd64" => "goblin"
@@ -20,9 +18,9 @@ class Goblin < Formula
       bin.install "goblin-linux-amd64" => "goblin"
     end
 
-    bash_completion.install "goblin-completion.bash"
-    zsh_completion.install "_goblin"
-    fish_completion.install "goblin.fish"
+    bash_completion.install "completion/goblin-completion.bash" => "goblin"
+    zsh_completion.install "completion/goblin-completion.zsh" => "_goblin"
+    fish_completion.install "completion/goblin.fish"
   end
 
   test do
