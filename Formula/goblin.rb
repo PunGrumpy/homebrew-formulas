@@ -5,10 +5,10 @@ class Goblin < Formula
 
   if OS.mac?
     url "https://github.com/PunGrumpy/goblin/releases/download/#{version}/goblin-darwin-amd64"
-    sha256 "b677b23334b5e6c8d64a022e951d447bf484d9b47d3c78f7a6d39c602f595f3e"
+    sha256 "d514f3818843ebb94ae6d5c1ca38b3bb1d133070b736988deae9ada6bbecb0cd"
   else
     url "https://github.com/PunGrumpy/goblin/releases/download/#{version}/goblin-linux-amd64"
-    sha256 "6919d88c56ee034919c3778620e881a6bac94696ad915a39916dd335230e3b1d"
+    sha256 "64f01e7f7a6c7afbae40d71462cc4ab3eb25bf5ef281230eb988d7d9634e91d9"
   end
 
   def install
