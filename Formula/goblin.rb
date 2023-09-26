@@ -18,7 +18,7 @@ class Goblin < Formula
       bin.install "goblin-linux-amd64" => "goblin"
     end
 
-    system "#{bin}/goblin", "completion"
+    generate_completions_from_executable("#{bin}/goblin", "completion")
   end
 
   test do
