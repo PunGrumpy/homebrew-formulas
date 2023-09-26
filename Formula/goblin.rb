@@ -17,6 +17,10 @@ class Goblin < Formula
     else
       bin.install "goblin-linux-amd64" => "goblin"
     end
+
+    bash_completion.install "completion/goblin.bash"
+    zsh_completion.install "completion/goblin.zsh" => "_goblin"
+    fish_completion.install "completion/goblin.fish"
   end
 
   test do
