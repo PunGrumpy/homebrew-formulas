@@ -53,5 +53,5 @@ jobs:
         run: |
           for file in Formula/*.rb; do
             formula=$(echo $file | sed 's/\.rb//g')
-            brew audit --formula $formula
+            brew audit --formula PunGrumpy/formulas/$formula
           done

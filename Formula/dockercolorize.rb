@@ -1,7 +1,7 @@
 class Dockercolorize < Formula
   desc "Enhancing Docker output with vibrant colors"
   homepage "https://github.com/PunGrumpy/dockercolorize"
-  version "2.6.2"
+  version "2.7.1"
 
   depends_on "docker"
 
