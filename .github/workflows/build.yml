@@ -48,4 +48,8 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
       - name: brew audit formula
-        run: brew audit --formula /Users/runner/work/homebrew-formulas/homebrew-formulas/Formula/*.rb
+        run: |
+          for file in Formula/*.rb; do
+            formula=$(echo $file | sed 's/\.rb//g')
+            brew audit --formula $formula
+          done
