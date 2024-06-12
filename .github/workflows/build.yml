@@ -8,6 +8,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  setup:
+    runs-on: macos-latest
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
   tap:
     runs-on: macos-latest
     steps:
@@ -15,6 +21,7 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
       - name: Brew tap
         run: brew tap PunGrumpy/formulas
+
   install_folder:
     runs-on: macos-latest
     steps:
@@ -22,8 +29,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
-      - name: brew install
+      - name: Brew install from folder
         run: brew install --formula $(pwd)/Formula/*.rb
+
   install_tap:
     needs: tap
     runs-on: macos-latest
@@ -33,13 +41,13 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
       - name: List files
-        run: |
-          ls Formula | sed 's/\.rb//g' > files.txt
-      - name: brew install
+        run: ls Formula | sed 's/\.rb//g' > files.txt
+      - name: Brew install from tap
         run: |
           while read tap_file; do
             brew install pungrumpy/formulas/$tap_file
           done < files.txt
+
   audit:
     runs-on: macos-latest
     steps:
