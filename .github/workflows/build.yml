@@ -15,6 +15,7 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
 
   tap:
+    needs: setup
     runs-on: macos-latest
     steps:
       - name: Set up Homebrew
@@ -23,6 +24,7 @@ jobs:
         run: brew tap PunGrumpy/formulas
 
   install_folder:
+    needs: setup
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -33,7 +35,7 @@ jobs:
         run: brew install --formula $(pwd)/Formula/*.rb
 
   install_tap:
-    needs: tap
+    needs: [tap, install_folder]
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -49,6 +51,7 @@ jobs:
           done < files.txt
 
   audit:
+    needs: install_tap
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -61,9 +64,5 @@ jobs:
           for file in Formula/*.rb; do
             formula=$(basename "$file" .rb)
             echo "Auditing $formula"
-            if brew audit pungrumpy/formulas/$formula; then
-              echo "$formula audit passed"
-            else
-              echo "Error: $formula audit failed"
-            fi
+            brew audit pungrumpy/formulas/$formula || exit 1
           done
