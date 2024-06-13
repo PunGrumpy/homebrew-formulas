@@ -1,16 +1,16 @@
 class Dockercolorize < Formula
   desc "Enhancing Docker output with vibrant colors"
   homepage "https://github.com/PunGrumpy/dockercolorize"
-  version "2.7.1"
+  version "2.8.0"
 
   depends_on "docker"
 
   if OS.mac?
     url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-darwin-amd64"
-    sha256 "9312aab132986414b51f475b131ba86f3a8553e794761c47b0037a68567ee969" # dockercolorize-darwin-amd64
+    sha256 "cedad3e2173f8fbc12c0c3f8f4035e1df869079cb0926134fcc09c9fc579a824" # dockercolorize-darwin-amd64
   else
     url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-linux-amd64"
-    sha256 "5ffa11049758ef08a593dbb1719bd4caf0452697c5c7779561d6ac777c8a66b4" # dockercolorize-linux-amd64
+    sha256 "ee3490f135c72daba21c81e28a22d9250285a4ad3bb150a56383bb9ac0d6f945" # dockercolorize-linux-amd64
   end
 
   def install
