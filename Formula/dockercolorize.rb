@@ -6,10 +6,10 @@ class Dockercolorize < Formula
   depends_on "docker"
 
   if OS.mac?
-    url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-darwin-amd64"
+    url "https://github.com/PunGrumpy/dockercolorize/releases/download/v#{version}/dockercolorize-darwin-amd64"
     sha256 "cedad3e2173f8fbc12c0c3f8f4035e1df869079cb0926134fcc09c9fc579a824" # dockercolorize-darwin-amd64
   else
-    url "https://github.com/PunGrumpy/dockercolorize/releases/download/#{version}/dockercolorize-linux-amd64"
+    url "https://github.com/PunGrumpy/dockercolorize/releases/download/v#{version}/dockercolorize-linux-amd64"
     sha256 "ee3490f135c72daba21c81e28a22d9250285a4ad3bb150a56383bb9ac0d6f945" # dockercolorize-linux-amd64
   end
 
