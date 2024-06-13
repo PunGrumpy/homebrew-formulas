@@ -1,6 +1,7 @@
 require 'json'
 require 'digest'
 require 'net/http'
+require 'uri'
 
 def prompt_usage
   puts 'Usage: ruby scripts/release.rb <version> <name>'
@@ -13,17 +14,7 @@ def sanitize_input(version, name)
   [sanitized_version, sanitized_name]
 end
 
-def fetch_release_data(version, name)
-  url = "https://api.github.com/repos/PunGrumpy/#{name}/releases/tags/#{version}"
-  response = Net::HTTP.get_response(URI(url))
-  unless response.is_a?(Net::HTTPSuccess)
-    puts "❌ Didn't find release #{version} for #{name} 🌐 status code: #{response.code}"
-    exit(1)
-  end
-  JSON.parse(response.body)
-end
-
-def fetch_asset_data(url)
+def fetch_response(url)
   uri = URI(url)
   response = Net::HTTP.get_response(uri)
   while response.is_a?(Net::HTTPRedirection)
@@ -31,10 +22,19 @@ def fetch_asset_data(url)
     response = Net::HTTP.get_response(uri)
   end
   unless response.is_a?(Net::HTTPSuccess)
-    puts "❌ Failed to download asset 🌐 status code: #{response.code}"
+    puts "❌ HTTP request failed for URL: #{url} 🌐 status code: #{response.code}"
     exit(1)
   end
   response.body
+end
+
+def fetch_release_data(version, name)
+  url = "https://api.github.com/repos/PunGrumpy/#{name}/releases/tags/#{version}"
+  JSON.parse(fetch_response(url))
+end
+
+def fetch_asset_data(url)
+  fetch_response(url)
 end
 
 def update_formula(version, assets, name)
@@ -49,35 +49,35 @@ def update_formula(version, assets, name)
   File.write(formula_path, formula)
 end
 
-# Main script execution starts here
-version, name = ARGV[0], ARGV[1]
-prompt_usage if version.nil? || name.nil?
+def main
+  version, name = ARGV[0], ARGV[1]
+  prompt_usage if version.nil? || name.nil?
 
-version, name = sanitize_input(version, name)
+  version, name = sanitize_input(version, name)
 
-puts "🏷️ Releasing #{name} on Homebrew version #{version}"
+  puts "🏷️ Releasing #{name} on Homebrew version #{version}"
 
-release = fetch_release_data(version, name)
-puts "📦 Found release #{release['name']} for #{name}"
+  release = fetch_release_data(version, name)
+  puts "📦 Found release #{release['name']} for #{name}"
 
-assets = {}
+  assets = {}
 
-release['assets'].each do |asset|
-  filename = asset['name']
+  release['assets'].each do |asset|
+    filename = asset['name']
+    next if !filename.end_with?('.zip') || filename.include?('-profile')
 
-  next if !filename.end_with?('.zip') || filename.include?('-profile')
+    puts "📦 Processing asset #{filename}"
 
-  puts "📦 Processing asset #{filename}"
+    asset_data = fetch_asset_data(asset['browser_download_url'])
+    sha256 = Digest::SHA256.hexdigest(asset_data)
+    puts "📦 Found asset #{filename} with SHA256 #{sha256}"
 
-  asset_data = fetch_asset_data(asset['browser_download_url'])
-  sha256 = Digest::SHA256.hexdigest(asset_data)
-  puts "📦 Found asset #{filename} with SHA256 #{sha256}"
+    assets[filename] = sha256
+  end
 
-  assets[filename] = sha256
+  update_formula(version, assets, name)
+  puts "📦 Updated formula #{name} to version #{version}"
+  puts '🍭 Done!'
 end
 
-update_formula(version, assets, name)
-puts "📦 Updated formula #{name} to version #{version}"
-
-puts '🍭 Done!'
-
+main if __FILE__ == $0
