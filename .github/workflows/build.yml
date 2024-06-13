@@ -66,3 +66,9 @@ jobs:
             echo "Auditing $formula"
             brew audit pungrumpy/formulas/$formula || exit 1
           done
+      - name: Dummy Commit to Trigger Build
+        uses: gautamkrishnar/keepalive-workflow@master
+        with:
+          committer_username: 'github-actions[bot]'
+          committer_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Dummy commit to trigger build'
