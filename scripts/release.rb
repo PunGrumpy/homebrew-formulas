@@ -29,7 +29,7 @@ def fetch_response(url)
 end
 
 def fetch_release_data(version, name)
-  url = "https://api.github.com/repos/PunGrumpy/#{name}/releases/tags/#{version}"
+  url = "https://api.github.com/repos/PunGrumpy/#{name}/releases/tags/v#{version}"
   JSON.parse(fetch_response(url))
 end
 
@@ -37,7 +37,7 @@ def fetch_asset_data(url)
   fetch_response(url)
 end
 
-def update_formula(version, assets, name)
+def update_formula(version, assets, name, sha256)
   formula_path = "Formula/#{name}.rb"
   formula = File.read(formula_path)
 
@@ -64,7 +64,6 @@ def main
 
   release['assets'].each do |asset|
     filename = asset['name']
-    next if !filename.end_with?('.zip') || filename.include?('-profile')
 
     puts "📦 Processing asset #{filename}"
 
@@ -75,7 +74,7 @@ def main
     assets[filename] = sha256
   end
 
-  update_formula(version, assets, name)
+  update_formula(version, assets, name, assets.values.first)
   puts "📦 Updated formula #{name} to version #{version}"
   puts '🍭 Done!'
 end
