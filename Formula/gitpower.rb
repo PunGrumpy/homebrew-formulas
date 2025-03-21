@@ -5,29 +5,68 @@
 class Gitpower < Formula
   desc "GitPower CLI tool"
   homepage "https://github.com/PunGrumpy/gitpower"
-  version "1.0.0"
+  version "1.0.1"
   license "MIT"
+
+  depends_on "git"
   depends_on :linux
 
   if Hardware::CPU.intel?
     if Hardware::CPU.is_64_bit?
-      url "https://github.com/PunGrumpy/gitpower/releases/download/v1.0.0/gitpower_Linux_x86_64.tar.gz"
-      sha256 "aadec489db4bba1ec0298441131d9a2ca924dcbd40b509e5ed1828193a60b328"
+      url "https://github.com/PunGrumpy/gitpower/releases/download/v1.0.1/gitpower_Linux_x86_64.tar.gz"
+      sha256 "4e063db2542d1ce5d109bd4e515e6f5acaad09412b75c67c66a9219d1b26d455"
 
       def install
-        bin.install "gitpower"
+        if OS.mac?
+          if Hardware::CPU.arm?
+            bin.install "gitpower_Darwin_aarch64/gitpower" => "gitpower"
+          else
+            bin.install "gitpower_Darwin_x86_64/gitpower" => "gitpower"
+          end
+        elsif OS.linux?
+          if Hardware::CPU.arm?
+            bin.install "gitpower_Linux_aarch64/gitpower" => "gitpower"
+          elsif Hardware::CPU.is_64_bit?
+            bin.install "gitpower_Linux_x86_64/gitpower" => "gitpower"
+          elsif Hardware::CPU.ppc64le?
+            bin.install "gitpower_Linux_ppc64le/gitpower" => "gitpower"
+          end
+        end
       end
     end
   end
   if Hardware::CPU.arm?
     if Hardware::CPU.is_64_bit?
-      url "https://github.com/PunGrumpy/gitpower/releases/download/v1.0.0/gitpower_Linux_aarch64.tar.gz"
-      sha256 "e85550e49399e5647e3bd0dc0a2e442bc797040a080cf809013b08fa26e7a215"
+      url "https://github.com/PunGrumpy/gitpower/releases/download/v1.0.1/gitpower_Linux_aarch64.tar.gz"
+      sha256 "8973a52166d06a1ba3aae1f8f99ac83223caaa71b889246e4c0ac2b0e2efbd7c"
 
       def install
-        bin.install "gitpower"
+        if OS.mac?
+          if Hardware::CPU.arm?
+            bin.install "gitpower_Darwin_aarch64/gitpower" => "gitpower"
+          else
+            bin.install "gitpower_Darwin_x86_64/gitpower" => "gitpower"
+          end
+        elsif OS.linux?
+          if Hardware::CPU.arm?
+            bin.install "gitpower_Linux_aarch64/gitpower" => "gitpower"
+          elsif Hardware::CPU.is_64_bit?
+            bin.install "gitpower_Linux_x86_64/gitpower" => "gitpower"
+          elsif Hardware::CPU.ppc64le?
+            bin.install "gitpower_Linux_ppc64le/gitpower" => "gitpower"
+          end
+        end
       end
     end
+  end
+
+  def caveats
+    <<~EOS
+      🚀 Thanks for installing GitPower!
+
+      For usage information, run:
+        gitpower --help
+    EOS
   end
 
   test do
