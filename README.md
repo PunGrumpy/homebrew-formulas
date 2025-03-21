@@ -24,9 +24,10 @@ brew search PunGrumpy/formulas
 
 <!-- project_table_start -->
 
-| Project                                                       | Description                                                        | Install                       |
-| ------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------- |
-| [dockercolorize](https://github.com/PunGrumpy/dockercolorize) | Enhancing Docker output with vibrant colors                        | `brew install dockercolorize` |
-| [goblin](https://github.com/PunGrumpy/goblin)                 | A command-line tool for hashing and reversing hashes using Jenkins | `brew install goblin`         |
+| Project                                                       | Description                                                        | Install                       | Platform      |
+| ------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------- | ------------- |
+| [dockercolorize](https://github.com/PunGrumpy/dockercolorize) | Enhancing Docker output with vibrant colors                        | `brew install dockercolorize` | macOS & Linux |
+| [goblin](https://github.com/PunGrumpy/goblin)                 | A command-line tool for hashing and reversing hashes using Jenkins | `brew install goblin`         | macOS & Linux |
+| [gitpower](https://github.com/PunGrumpy/gitpower)             | GitPower CLI tool                                                  | `brew install gitpower`       | Linux only    |
 
 <!-- project_table_end -->

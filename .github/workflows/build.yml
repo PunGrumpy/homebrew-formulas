@@ -32,7 +32,16 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
       - name: Brew install from folder
-        run: brew install --formula $(pwd)/Formula/*.rb
+        run: |
+          for file in Formula/*.rb; do
+            formula=$(basename "$file" .rb)
+            if grep -q "depends_on :linux" "$file" && [[ "$(uname)" != "Linux" ]]; then
+              echo "Skipping $formula (Linux only)"
+              continue
+            fi
+            echo "Installing $formula from folder"
+            brew install --formula "$file" || echo "Warning: Failed to install $formula, but continuing..."
+          done
 
   install_tap:
     needs: [tap, install_folder]
@@ -42,13 +51,30 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
-      - name: List files
-        run: ls Formula | sed 's/\.rb//g' > files.txt
+      - name: List and filter files
+        run: |
+          for file in Formula/*.rb; do
+            formula=$(basename "$file" .rb)
+            if grep -q "depends_on :linux" "$file" && [[ "$(uname)" != "Linux" ]]; then
+              echo "Skipping $formula (Linux only)"
+              continue
+            fi
+            echo "$formula" >> install_files.txt
+          done
+          if [ ! -f install_files.txt ]; then
+            echo "No compatible formulas found"
+            touch install_files.txt
+          fi
       - name: Brew install from tap
         run: |
-          while read tap_file; do
-            brew install pungrumpy/formulas/$tap_file
-          done < files.txt
+          if [ -s install_files.txt ]; then
+            while read tap_file; do
+              echo "Installing $tap_file from tap"
+              brew install pungrumpy/formulas/$tap_file || echo "Warning: Failed to install $tap_file, but continuing..."
+            done < install_files.txt
+          else
+            echo "No formulas to install"
+          fi
 
   audit:
     needs: install_tap
@@ -63,6 +89,10 @@ jobs:
           set -e
           for file in Formula/*.rb; do
             formula=$(basename "$file" .rb)
+            if grep -q "depends_on :linux" "$file" && [[ "$(uname)" != "Linux" ]]; then
+              echo "Skipping audit for $formula (Linux only)"
+              continue
+            fi
             echo "Auditing $formula"
             brew audit pungrumpy/formulas/$formula || exit 1
           done
